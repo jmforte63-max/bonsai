@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+            <div id="header-actions">
+                <span id="userInfo" class="user-info"></span>
+            </div>
+        </div>
+        <div class="header">
+            <h1>Panel de Administración</h1>
+        </div>
+        <div id="adminStats" class="info-card" style="margin-bottom: 20px;">
+            <!-- Las estadísticas se cargarán aquí -->
+            <p>Cargando estadísticas...</p>
+        </div>
+        <h2>Gestionar Usuarios</h2>
+        <div id="pendingUsersList"></div>
+    </div>
+    <script src="admin.js" type="module"></script>
+</body>
+</html>

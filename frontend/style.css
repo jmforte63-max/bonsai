@@ -1,0 +1,579 @@
+body {
+  font-family: sans-serif;
+  margin: 40px;
+  background: #f7f8f5;
+  color: #333;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+#header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: auto; /* Empuja todo el bloque a la derecha */
+}
+.nav-link, button {
+  background: #68a65a;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+.user-info {
+  color: #555;
+  font-weight: bold;
+  cursor: pointer;
+}
+.bonsai {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  margin: 10px;
+  display: inline-block;
+  width: 220px;            /* tamaño uniforme de la ficha */
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  vertical-align: top;
+}
+
+/* Imagen adaptada */
+.bonsai img {
+  width: 100%;
+  height: 180px;           /* altura fija del recuadro */
+  object-fit: contain;     /* ✅ muestra toda la foto, sin recortar */
+  border-radius: 10px;
+  background-color: #f0f0f0; /* fondo neutro donde no haya imagen */
+}
+
+/* Estilos para la página de trabajos */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.back-link {
+  text-decoration: none;
+  color: #68a65a;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+.info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para la tarjeta de info en la página de detalle */
+#infoBonsai {
+    display: grid;
+    grid-template-columns: 150px 1fr; /* Columna para la imagen, el resto para el texto */
+    gap: 30px;
+    align-items: center;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    position: relative;
+    overflow: hidden;
+}
+.detalle-bonsai-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.detalle-bonsai-texto h1 {
+    margin: 0 0 15px 0;
+    font-size: 2.2em;
+    color: #333;
+}
+.detalle-bonsai-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+.detalle-bonsai-grid p {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+/* Estilos para la página de trabajos (items) */
+.trabajo-item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+}
+
+/* Estilos para la página de trabajos (items) */
+.trabajo-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  border-left: 5px solid #68a65a;
+}
+
+.trabajo-acciones {
+    margin-top: 15px;
+    text-align: right;
+}
+.trabajo-item h4 {
+    margin: 0 0 15px 0;
+    font-size: 1.3em;
+    color: #68a65a;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+.trabajo-imagenes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+.trabajo-imagenes img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+}
+/* Estilos para los botones de acción en el detalle del bonsái */
+.bonsai-detail-actions {
+  display: flex;
+  gap: 10px;
+}
+/* Estilos para la lista de usuarios en admin.html */
+.user-info-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.item-nombre {
+  flex-grow: 1; /* Hace que el nombre ocupe el espacio disponible */
+}
+
+.item-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0; /* Evita que los botones se encojan */
+}
+
+.user-info-line p {
+  margin: 5px 0;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-status-text {
+  font-weight: bold;
+}
+
+.status-approved {
+  color: #27ae60; /* Verde esmeralda */
+}
+
+.status-pending {
+  color: #e67e22; /* Naranja */
+}
+
+.user-actions {
+  display: flex;
+  gap: 10px;
+}
+
+
+select.role-selector {
+  padding: 5px 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+/* --- Estilos de Botones con Relieve --- */
+.nav-link, button {
+  transition: transform 0.1s, box-shadow 0.1s;
+  box-shadow: 0 4px #4a7d42; /* Sombra que da el efecto 3D */
+}
+
+.nav-link:hover, button:hover {
+  background: #7dc36f; /* Un verde un poco más brillante al pasar el ratón */
+}
+
+.nav-link:active, button:active {
+  transform: translateY(2px); /* Mueve el botón hacia abajo */
+  box-shadow: 0 2px #4a7d42; /* Reduce la sombra para el efecto de "presionado" */
+}
+
+/* --- Estilos para la barra de búsqueda --- */
+.search-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+#searchInput {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+}
+/* Botones de acción específicos */
+button.btn-eliminar {
+  background-color: #e74c3c; /* Rojo */
+  box-shadow: 0 4px #a5281b;
+}
+button.btn-eliminar:hover {
+  background-color: #c0392b;
+}
+/* Estilos para Tareas Pendientes */
+.tarea-item .tarea-descripcion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+}
+.tarea-detalles {
+    padding-left: 30px; /* Alineado con el texto de la tarea */
+    margin-top: 5px;
+}
+.tarea-info {
+    font-size: 0.9em;
+    color: #666;
+    margin: 2px 0;
+}
+
+button.btn-editar {
+  background-color: #3498db; /* Azul */
+  box-shadow: 0 4px #2980b9;
+}
+button.btn-editar:hover {
+  background-color: #2980b9;
+}
+
+
+button.btn-revoke {
+  background-color: #e67e22; /* Naranja */
+  box-shadow: 0 4px #d35400;
+}
+button.btn-revoke:hover {
+  background-color: #d35400;
+}
+
+button.btn-approve {
+  background-color: #27ae60; /* Verde esmeralda */
+  box-shadow: 0 4px #229954;
+}
+button.btn-approve:hover {
+  background-color: #229954;
+}
+form button[type="submit"] {
+  align-self: flex-end; /* Alinea el botón a la derecha */
+  width: auto; /* Ancho automático según el contenido */
+  padding: 12px 25px; /* Más padding para un mejor aspecto */
+  font-size: 1em;
+}
+
+@media (max-width: 768px) {
+    #infoBonsai {
+        grid-template-columns: 1fr; /* La imagen se pone encima del texto */
+        text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+  .bonsai {
+    width: 100%;
+  }
+}
+
+/* --- Estilos del Modal --- */
+.modal {
+  display: none; /* Oculto por defecto */
+  position: fixed; /* Se queda fijo en la pantalla */
+  z-index: 100; /* Se muestra por encima de todo */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Permite scroll si el contenido es muy grande */
+  background-color: rgba(0,0,0,0.5); /* Fondo negro semitransparente */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; /* Centrado vertical y horizontalmente */
+  padding: 25px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.close-button {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* --- Estilos Mejorados para Formularios --- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="file"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1em;
+  background-color: #f9f9f9;
+}
+
+.form-group input[type="file"] {
+  padding: 8px;
+}
+
+.info-card form {
+  gap: 15px;
+}
+
+/* --- Estilos de Notificación (Toast) --- */
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4CAF50; /* Verde éxito */
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.5s, bottom 0.5s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  pointer-events: none; /* Para que no se pueda hacer clic en él */
+}
+
+.toast-notification.show {
+  opacity: 1;
+  bottom: 40px;
+}
+.toast-notification.error {
+    background-color: #e74c3c; /* Rojo error */
+}
+
+/* --- Estilos para Lightbox de Imagen --- */
+.historial-img {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.historial-img:hover {
+  opacity: 0.7;
+}
+
+.image-lightbox {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  z-index: 1001; /* Por encima del otro modal */
+  padding-top: 60px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.9);
+}
+
+.lightbox-content {
+  margin: auto;
+  display: block;
+  width: auto;
+  max-width: 80%;
+  max-height: 80vh;
+  animation-name: zoom;
+  animation-duration: 0.4s;
+}
+
+.close-lightbox {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+@keyframes zoom {
+  from {transform: scale(0.1)}
+  to {transform: scale(1)}
+}
+
+/* --- Estilos para Login/Registro --- */
+.auth-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5; /* Fondo claro */
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px;
+  padding: 40px;
+  background: #f0f2f5; /* Mismo fondo claro */
+  border-radius: 20px;
+  /* Sombras para relieve en modo claro */
+  box-shadow: 7px 7px 15px #d9dbe0, -7px -7px 15px #ffffff;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.auth-container h2 {
+  margin-bottom: 25px;
+  color: #333; /* Texto oscuro */
+  font-size: 2em;
+}
+
+.auth-container h2::before {
+  content: '🌱 ';
+  display: inline-block;
+}
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-container .form-group input {
+  transition: all 0.3s;
+  background-color: #e9edf0; /* Fondo de input claro */
+  border: 1px solid #e9edf0;
+  color: #333; /* Texto del input oscuro */
+}
+
+.auth-container .form-group input::placeholder {
+  color: #888; /* Color del placeholder */
+}
+
+.auth-container .form-group input:focus {
+  background-color: #f0f2f5;
+  border-color: #f0f2f5;
+  outline: none;
+  /* Sombra interior para efecto "hundido" */
+  box-shadow: inset 3px 3px 7px #d9dbe0, inset -3px -3px 7px #ffffff;
+}
+
+.error-message {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: none; /* Oculto por defecto */
+}
+
+/* --- Estilos para Modal de Confirmación --- */
+.confirm-modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.confirm-modal-content {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  max-width: 400px;
+}
+
+.confirm-modal-content p {
+  margin: 0 0 20px 0;
+  font-size: 1.1em;
+}
+
+.confirm-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.auth-switch-link {
+  margin-top: 20px;
+  display: block;
+  color: #555; /* Texto de enlace oscuro */
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.auth-switch-link:hover {
+  color: #68a65a;
+  text-decoration: underline;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Registro de Trabajos 🌱</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+            <div id="header-actions">
+                <span id="userInfo" class="user-info"></span>
+            </div>
+        </div>
+        <div class="header">
+            <h1 style="margin: 0;">Registro de Trabajos</h1>
+            <button id="btnAbrirModal" class="nav-link" style="border: none; cursor: pointer;">Añadir Nuevo Trabajo</button>
+        </div>
+
+        <!-- El Modal para Trabajos -->
+        <div id="trabajoModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="modalTitle">Añadir Trabajo</h2>
+                <form id="formTrabajo" novalidate>
+                    <div class="form-group">
+                        <label for="tipo_trabajo">Tipo de Trabajo</label>
+                        <input type="text" id="tipo_trabajo" name="tipo_trabajo" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" required />
+                    </div>
+                    <button type="submit">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="listaTrabajos"></div>
+    </div>
+    <script src="trabajos.js" type="module"></script>
+</body>
+</html>

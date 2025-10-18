@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Procedencias - Bonsai App 🌱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Gestionar Procedencias</h1>
+        <div id="header-actions">
+            <span id="userInfo" class="user-info"></span>
+            <a href="/" class="nav-link">Mis Bonsáis</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="info-card">
+            <h2>Añadir Nueva Procedencia</h2>
+            <form id="formProcedencia">
+                <div class="form-group">
+                    <label for="nombreProcedencia">Nombre de la Procedencia</label>
+                    <input type="text" id="nombreProcedencia" name="nombre" required autocomplete="off">
+                </div>
+                <button type="submit">➕ Añadir</button>
+            </form>
+        </div>
+
+        <div id="listaProcedencias"></div>
+
+        <!-- Modal para Editar Procedencia -->
+        <div id="editProcedenciaModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="editModalTitle">Editar Procedencia</h2>
+                <form id="formEditProcedencia">
+                    <input type="hidden" id="editProcedenciaId">
+                    <div class="form-group">
+                        <label for="editNombreProcedencia">Nuevo Nombre</label>
+                        <input type="text" id="editNombreProcedencia" name="nombre" required autocomplete="off">
+                    </div>
+                    <button type="submit">💾 Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="procedencias.js" type="module"></script>
+</body>
+</html>
