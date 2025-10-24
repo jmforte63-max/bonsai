@@ -21,7 +21,7 @@ const app = express();
 const PORT = 3000;
 const pool = new PG.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl:  true
+  //ssl:  true
 
 })
 app.get ('/ping', async (req, res) =>{
