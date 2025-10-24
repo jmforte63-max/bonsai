@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Perfil - Bonsai App 🌱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+            <div id="header-actions">
+                <span id="userInfo" class="user-info"></span>
+            </div>
+        </div>
+        <div class="header">
+            <h1 style="margin: 0;">Mi Perfil</h1>
+        </div>
+
+        <div class="info-card">
+            <h2>Cambiar Foto de Perfil</h2>
+            <div class="perfil-container">
+                <img id="currentProfilePic" src="https://via.placeholder.com/150" alt="Foto de perfil actual" class="profile-pic-large">
+                <form id="formProfilePic">
+                    <div class="form-group">
+                        <label for="foto_perfil">Selecciona una nueva imagen:</label>
+                        <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" required>
+                    </div>
+                    <button type="submit">💾 Subir y Guardar Foto</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="perfil.js" type="module"></script>
+</body>
+</html>

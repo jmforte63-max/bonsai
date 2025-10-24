@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario de Cuidados 🌱</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Scripts de FullCalendar -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+            <div id="header-actions">
+                <span id="userInfo"></span>
+            </div>
+        </div>
+        <div class="header">
+            <h1 style="margin: 0;">Calendario de Cuidados</h1>
+        </div>
+
+        <div class="info-card" style="margin-top: 20px;">
+            <div id='calendar'></div>
+        </div>
+    </div>
+
+    <script src="calendario.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Abonos - Bonsai App 🌱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">        
+        <!-- La cabecera y el botón de añadir se inyectarán con JS -->
+        <!-- El formulario de añadir abono ahora estará en un modal -->
+
+        <div class="search-container"><input type="search" id="searchInput" placeholder="Buscar por nombre o tipo..."></div>
+
+        <div id="listaAbonos"></div> <!-- Los abonos se cargarán aquí -->
+
+        <!-- Modal para Editar Abono -->
+        <div id="editAbonoModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="editModalTitle">Editar Abono</h2>
+                <form id="formEditAbono">
+                    <!-- Los campos del formulario se inyectarán con JavaScript -->
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para Añadir Abono (Este es el que faltaba) -->
+        <div id="addAbonoModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Añadir Nuevo Abono</h2>
+                <form id="formAddAbono">
+                    <div class="form-group">
+                        <label for="nombreAbono">Nombre del Abono</label>
+                        <input type="text" id="nombreAbono" name="nombre" required autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="tipoAbono">Tipo (Ej: Líquido, Sólido)</label>
+                        <input type="text" id="tipoAbono" name="tipo" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="observacionesAbono">Observaciones</label>
+                        <textarea id="observacionesAbono" name="observaciones" rows="3"></textarea>
+                    </div>
+                    <button type="submit">➕ Añadir Abono</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="abonos.js" type="module"></script>
+</body>
+</html>

@@ -2,9 +2,11 @@ import { showToast, showConfirm } from './utils.js';
 import { setupAuthUI } from './authUI.js';
 
 // --- Configuración de autenticación y UI (página principal) ---
-const { authHeader, userRole, userId } = setupAuthUI('userInfo', '.header div');
+const { authHeader, userRole, userId } = setupAuthUI('userInfo', '#header-actions');
+
 const apiUrl = "http://localhost:3000/api/bonsais";
 const apiUrlProcedencias = "http://localhost:3000/api/procedencias";
+const apiUrlAbonos = "http://localhost:3000/api/abonos";
 const form = document.getElementById("formBonsai");
 const lista = document.getElementById("listaBonsais");
 const modal = document.getElementById("bonsaiModal");
@@ -12,10 +14,14 @@ const btnAbrirModal = document.getElementById("btnAbrirModal");
 const spanCerrar = document.querySelector(".close-button");
 const modalTitle = document.getElementById("modalTitle");
 const searchInput = document.getElementById('searchInput');
-const linkGestionProcedencias = document.getElementById('linkGestionProcedencias');
-const selectProcedencia = document.getElementById('selectProcedencia');
+const linkCalendario = document.getElementById('linkCalendario'); // Asumimos que el enlace tiene este ID
+const menuGestion = document.getElementById('menuGestion');
+const abonoSelect = document.getElementById('abono_id');
+const procedenciasDataList = document.getElementById('procedencias-list');
+
 
 let todosLosBonsais = []; // Para almacenar la lista completa de bonsáis
+let todasLasProcedencias = []; // Para almacenar la lista completa de procedencias
 
 let modoEdicion = false;
 let idEditar = null;
@@ -35,17 +41,22 @@ function cerrarModal() {
 // Ocultar el botón de "Añadir Bonsái" si el usuario es moderador
 if (userRole === 'moderator') {
   btnAbrirModal.style.display = 'none';
+  // Ocultar también el enlace al calendario
+  if(linkCalendario) {
+    linkCalendario.style.display = 'none';
+  }
 }
 
-// Mostrar enlace de gestión de procedencias si es admin
-if (userRole === 'admin') {
-  linkGestionProcedencias.style.display = 'inline-block';
+// Mostrar enlace de gestión de procedencias si es admin o user
+if (userRole === 'admin' || userRole === 'user') {
+  menuGestion.style.display = 'inline-block';
 }
 
 btnAbrirModal.onclick = () => {
   abrirModalParaCrear();
 };
 spanCerrar.onclick = cerrarModal;
+
 window.onclick = (event) => {
   if (event.target == modal) {
     cerrarModal();
@@ -58,36 +69,57 @@ window.onclick = (event) => {
  */
 function renderBonsais(bonsais) {
   lista.innerHTML = "";
-  bonsais.forEach(b => {
-    const div = document.createElement("div");
-    div.className = "bonsai";
-
-    // Lógica para mostrar botones de acción según el rol
-    let actionButtons = '';
-    const isOwner = b.user_id === userId;
-
-    if (userRole === 'admin' || isOwner) {
-      actionButtons = `
-        <button class="btn-editar" data-id="${b.id}">✏️ Editar</button>
-        <button class="btn-eliminar" data-id="${b.id}">❌ Eliminar</button>`;
-    } else if (userRole === 'moderator') {
-      actionButtons = `<button class="btn-eliminar" data-id="${b.id}">❌ Eliminar</button>`;
-    }
-
-    // Lógica para mostrar el dueño (si es admin o moderador)
-    const ownerInfo = (userRole === 'admin' || userRole === 'moderator') && b.owner_email ?
-      `<p class="owner-info">Dueño: ${b.owner_email}</p>` : '';
-
-    div.innerHTML = `
-      <a href="/bonsai_detalle.html?id=${b.id}" style="text-decoration: none; color: inherit;">
-        <img src="http://localhost:3000${b.foto}" alt="${b.nombre}" />
-        <h3>${b.nombre}</h3>
-      </a>
-      ${ownerInfo}
-      ${actionButtons}
+  if (bonsais.length === 0) {
+    // Si no hay bonsáis, mostramos el estado vacío amigable
+    lista.innerHTML = `
+      <div class="empty-state-container">
+        <div class="empty-state-icon">🌱</div>
+        <h2>¡Tu colección está esperando!</h2>
+        <p>Añade tu primer bonsái para empezar a registrar sus cuidados.</p>
+        ${userRole !== 'moderator' ? '<p>Usa el botón <strong>"Añadir Bonsái"</strong> para comenzar.</p>' : ''}
+      </div>
     `;
-    lista.appendChild(div);
-  });
+    // Ocultamos la barra de búsqueda si no hay nada que buscar
+    searchInput.style.display = 'none';
+  } else {
+    // Si hay bonsáis, los mostramos y aseguramos que la búsqueda esté visible
+    searchInput.style.display = 'flex';
+    bonsais.forEach(b => {
+      const div = document.createElement("div");
+      div.className = "bonsai";
+
+      // Lógica para mostrar botones de acción según el rol
+      let actionButtons = '';
+      const isOwner = b.user_id === userId;
+
+      if (userRole === 'admin' || isOwner) {
+        actionButtons = `
+          <div class="bonsai-actions">
+            <button class="btn-editar" data-id="${b.id}">✏️ Editar</button>
+            <button class="btn-eliminar" data-id="${b.id}">❌ Eliminar</button>
+          </div>`;
+      } else if (userRole === 'moderator') {
+        actionButtons = `
+          <div class="bonsai-actions">
+            <button class="btn-eliminar" data-id="${b.id}">❌ Eliminar</button>
+          </div>`;
+      }
+
+      // Lógica para mostrar el dueño (si es admin o moderador)
+      const ownerInfo = (userRole === 'admin' || userRole === 'moderator') && b.owner_email ?
+        `<p class="owner-info">Dueño: ${b.owner_email}</p>` : '';
+
+      div.innerHTML = `
+        <a href="/bonsai_detalle.html?id=${b.id}" style="text-decoration: none; color: inherit;">
+          <img src="http://localhost:3000${b.foto}" alt="${b.nombre}" />
+          <h3>${b.nombre}</h3>
+        </a>
+        ${ownerInfo}
+        ${actionButtons}
+      `;
+      lista.appendChild(div);
+    });
+  }
 }
 
 async function cargarBonsais() {
@@ -120,17 +152,40 @@ async function eliminarBonsai(id) {
  * Carga las procedencias desde la API y las añade al select.
  */
 async function cargarProcedencias() {
-  try {
-    const res = await fetch(apiUrlProcedencias, { headers: authHeader });
-    const procedencias = await res.json();
-    selectProcedencia.innerHTML = '<option value="">-- Selecciona una procedencia --</option>'; // Limpiar y añadir opción por defecto
-    procedencias.forEach(p => {
-      const option = new Option(p.nombre, p.nombre); // El valor y el texto son el nombre
-      selectProcedencia.add(option);
-    });
-  } catch (error) {
-    console.error("Error al cargar procedencias:", error);
-  }
+    try {
+        const res = await fetch(apiUrlProcedencias, { headers: authHeader });
+        const procedencias = await res.json();
+        procedenciasDataList.innerHTML = ''; // Limpiar la lista
+        procedencias.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.nombre;
+            procedenciasDataList.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error al cargar procedencias:", error);
+    }
+}
+
+/**
+ * Carga los abonos desde la API y los añade al select.
+ */
+async function cargarAbonos() {
+    try {
+        const res = await fetch(apiUrlAbonos, { headers: authHeader });
+        const abonos = await res.json();
+
+        // Guardar la primera opción ("Ninguno")
+        const defaultOption = abonoSelect.options[0];
+        abonoSelect.innerHTML = '';
+        abonoSelect.appendChild(defaultOption);
+
+        abonos.forEach(abono => {
+            const option = new Option(`${abono.nombre} (${abono.tipo || 'N/A'})`, abono.id);
+            abonoSelect.add(option);
+        });
+    } catch (error) {
+        console.error("Error al cargar abonos:", error);
+    }
 }
 
 function abrirModalParaCrear() {
@@ -155,8 +210,9 @@ function abrirModalParaEditar(bonsai) {
   form.nombre.value = b.nombre;
   form.especie.value = b.especie;
   form.edad.value = b.edad;
-  selectProcedencia.value = b.procedencia || '';
+  form.procedencia.value = b.procedencia || '';
   form.fecha_riego.value = b.fecha_riego;
+  form.abono_id.value = b.abono_id || '';
 
   modoEdicion = true;
   idEditar = b.id;
@@ -229,10 +285,29 @@ searchInput.addEventListener('input', (e) => {
     renderBonsais(bonsaisFiltrados);
 });
 
+// --- Lógica para el menú desplegable "Gestionar" ---
+const dropdownToggle = document.querySelector('.dropdown-toggle');
+if (dropdownToggle) {
+    dropdownToggle.addEventListener('click', function() {
+        const dropdownContent = this.nextElementSibling;
+        const arrow = this.querySelector('.arrow');
+
+        // Alternar la visibilidad del contenido
+        if (dropdownContent.classList.contains('show')) {
+            dropdownContent.classList.remove('show');
+            arrow.classList.remove('open');
+        } else {
+            dropdownContent.classList.add('show');
+            arrow.classList.add('open');
+        }
+    });
+}
+
 
 async function inicializarApp() {
-    cargarBonsais();
-    cargarProcedencias();
+    await cargarBonsais();
+    await cargarProcedencias();
+    await cargarAbonos();
 }
 
 inicializarApp();

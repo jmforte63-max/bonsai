@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(data.role) localStorage.setItem('bonsai-user-role', data.role);
             if(data.id) localStorage.setItem('bonsai-user-id', data.id); // Guardamos el ID
             localStorage.setItem('bonsai-token', data.token);
+            if(data.foto_perfil) localStorage.setItem('bonsai-user-foto', data.foto_perfil);
             localStorage.setItem('bonsai-user-email', data.email); // Guardamos el email
             window.location.href = '/'; // Redirigir a la página principal
         });

@@ -4,61 +4,90 @@
   <meta charset="UTF-8" />
   <title>Bonsai App 🌱</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Estilos para el menú desplegable (mover a style.css) -->
+  <style>
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 100;
+      border-radius: 5px;
+    }
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    .dropdown-content a:hover {background-color: #f1f1f1;}
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <div class="header">
     <h1>Mis Bonsáis</h1>
-    <div id="header-actions">
-      <span id="userInfo" class="user-info"></span>
-      <button id="btnAbrirModal" class="nav-link" style="border: none; cursor: pointer;">Añadir Nuevo Bonsái</button>
-      <a href="/trabajos.html" class="nav-link">Técnicas de Bonsái</a>
-      <a id="linkGestionProcedencias" href="/procedencias.html" class="nav-link" style="display: none;">Gestionar Procedencias</a>
+    <div id="header-actions"> 
+      <span id="userInfo"></span>
+      <!-- Los botones de admin y logout se añadirán aquí con JS -->
     </div>
   </div>
 
-  <!-- Barra de búsqueda -->
-  <div class="search-container">
-    <input type="search" id="searchInput" placeholder="Buscar por nombre o especie...">
+  <div class="main-container">
+    <div class="sidebar">
+        <h3 class="sidebar-title">Menú</h3>
+        <button id="btnAbrirModal" class="nav-link" style="border: none; cursor: pointer; width: 100%;">Añadir Nuevo Bonsái</button>
+        <a href="/trabajos.html" class="nav-link">Técnicas de Bonsái</a>
+        <a href="/galeria.html" class="nav-link">Galería</a>
+        <a href="/ayuda.html" class="nav-link">Guía de Usuario</a>
+        <a href="/calendario.html" class="nav-link">Calendario</a>
+        <!-- Menú desplegable de Gestión -->
+        <div class="dropdown" id="menuGestion" style="display: none;">
+          <button class="nav-link dropdown-toggle" style="border: none; cursor: pointer; width: 100%;">Gestionar <span class="arrow">&#9662;</span></button>
+          <div class="dropdown-content">
+            <a href="/especies.html">Mis Especies</a>
+            <a href="/abonos.html">Abonos</a>
+            <a href="/macetas.html">Macetas</a>
+            <a href="/procedencias.html">Procedencias</a>
+          </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+      <!-- Barra de búsqueda -->
+      <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Buscar por nombre o especie...">
+      </div>
+
+      <div id="listaBonsais"></div>
+    </div>
   </div>
 
-  <!-- El Modal -->
+  <!-- El Modal no se mueve, ya que es un overlay sobre toda la página -->
   <div id="bonsaiModal" class="modal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
       <h2 id="modalTitle">Añadir Bonsái</h2>
       <form id="formBonsai">
-        <div class="form-group">
-          <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" name="nombre" required />
-        </div>
-        <div class="form-group">
-          <label for="especie">Especie</label>
-          <input type="text" id="especie" name="especie" required />
-        </div>
-        <div class="form-group">
-          <label for="selectProcedencia">Procedencia</label>
-          <select id="selectProcedencia" name="procedencia" required>
-            <option value="">-- Selecciona una procedencia --</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="edad">Edad (años)</label>
-          <input type="number" id="edad" name="edad" required />
-        </div>
-        <div class="form-group">
-          <label for="fecha_riego">Fecha del Último Trabajo</label>
-          <input type="date" id="fecha_riego" name="fecha_riego" required />
-        </div>
-        <div class="form-group">
-          <label for="foto">Foto</label>
-          <input type="file" id="foto" name="foto" accept="image/*" />
-        </div>
+        <!-- ... el contenido del formulario no cambia ... -->
+        <div class="form-group"><label for="nombre">Nombre</label><input type="text" id="nombre" name="nombre" required /></div>
+        <div class="form-group"><label for="especie">Especie</label><input type="text" id="especie" name="especie" required /></div>
+        <div class="form-group"><label for="selectProcedencia">Procedencia</label><input type="text" id="procedencia" name="procedencia" list="procedencias-list" required autocomplete="off" placeholder="Escribe o selecciona una procedencia"><datalist id="procedencias-list"></datalist></div>
+        <div class="form-group"><label for="edad">Edad (años)</label><input type="number" id="edad" name="edad" required /></div>
+        <div class="form-group"><label for="fecha_riego">Fecha del Último Trabajo</label><input type="date" id="fecha_riego" name="fecha_riego" /></div>
+        <div class="form-group"><label for="abono_id">Abono Preferido (Opcional)</label><select id="abono_id" name="abono_id"><option value="">-- Ninguno --</option></select></div>
+        <div class="form-group"><label for="foto">Foto</label><input type="file" id="foto" name="foto" accept="image/*" /></div>
         <button type="submit">Guardar</button>
       </form>
     </div>
   </div>
-
-  <div id="listaBonsais"></div>
 
   <script src="script.js" type="module"></script>
 </body>

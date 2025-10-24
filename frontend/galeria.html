@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Galería de Progresos 🌱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+            <div id="header-actions">
+                <span id="userInfo" class="user-info"></span>
+            </div>
+        </div>
+        <div class="header">
+            <h1 style="margin: 0;">Galería de "Antes y Después"</h1>
+        </div>
+
+        <!-- Controles de Filtro y Ordenación -->
+        <div class="gallery-controls">
+            <div class="form-group">
+                <label for="speciesFilter">Filtrar por Especie:</label>
+                <select id="speciesFilter" name="species"></select>
+            </div>
+            <div class="form-group">
+                <label for="sortFilter">Ordenar por:</label>
+                <select id="sortFilter" name="sort"></select>
+            </div>
+        </div>
+
+        <div id="galleryContainer" class="gallery-container">
+            <!-- Las imágenes de la galería se cargarán aquí -->
+        </div>
+    </div>
+
+    <!-- Modal para ver imagen en grande (Lightbox) -->
+    <div id="imageModal" class="image-lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightboxImage">
+    </div>
+
+    <script src="galeria.js" type="module"></script>
+</body>
+</html>

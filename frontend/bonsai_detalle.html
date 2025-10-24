@@ -9,33 +9,35 @@
     <div class="container">
         <div class="header">
             <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
-            <div id="header-actions">
-                <span id="userInfo" class="user-info"></span>
-            </div>
+            <span id="userInfo" class="user-info"></span>
+            <a id="linkCuidados" href="#" class="nav-link">📝 Plan de Cuidados</a>
         </div>
 
         <div id="infoBonsai" class="info-card">
             <!-- La información del bonsái se cargará aquí -->
         </div>
 
-        <div class="header" style="justify-content: space-between; align-items: center; display: flex; margin-top: 20px;">
-            <h2>Historial de Trabajos</h2>
-            <div style="display: flex; gap: 10px;">
-                <button id="btnAbrirModalTrabajo" class="nav-link">Añadir Trabajo Realizado</button>
+        <div class="secciones-paralelo">
+            <div class="seccion-historial">
+                <div class="header" style="justify-content: space-between; align-items: center; display: flex;">
+                    <h2>Historial de Trabajos</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btnAbrirModalTrabajo" class="nav-link">Añadir Trabajo Realizado</button>
+                    </div>
+                </div>
+                <div id="historialTrabajos">
+                    <!-- El historial se cargará aquí -->
+                </div>
             </div>
-        </div>
-
-        <div id="historialTrabajos">
-            <!-- El historial se cargará aquí -->
-        </div>
-
-        <!-- Nueva sección de Tareas Pendientes -->
-        <div class="header" style="justify-content: space-between; align-items: center; display: flex; margin-top: 40px;">
-            <h2>Tareas Pendientes</h2>
-            <button id="btnAbrirModalTarea" class="nav-link">Añadir Tarea</button>
-        </div>
-        <div id="listaTareasPendientes" style="margin-top: 20px;">
-            <!-- Las tareas pendientes se cargarán aquí -->
+            <div class="seccion-tareas">
+                <div class="header" style="justify-content: space-between; align-items: center; display: flex;">
+                    <h2>Tareas Pendientes</h2>
+                    <button id="btnAbrirModalTarea" class="nav-link">Añadir Tarea</button>
+                </div>
+                <div id="listaTareasPendientes">
+                    <!-- Las tareas pendientes se cargarán aquí -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -47,10 +49,10 @@
             <form id="formTrabajoBonsai">
                 <input type="hidden" id="trabajoBonsaiId" name="trabajoBonsaiId">
                 <div class="form-group">
-                    <label for="selectTrabajo">Tipo de Trabajo</label>
-                    <select id="selectTrabajo" name="trabajo_id" required>
-                        <option value="">-- Selecciona un tipo de trabajo --</option>
-                    </select>
+                    <label for="trabajo_id_input">Tipo de Trabajo</label>
+                    <input type="text" id="trabajo_id_input" list="trabajos-list" required autocomplete="off" placeholder="Escribe o selecciona un trabajo">
+                    <datalist id="trabajos-list"></datalist>
+                    <input type="hidden" id="trabajo_id" name="trabajo_id">
                 </div>
                 <div class="form-group">
                     <label for="fecha">Fecha</label>
@@ -87,10 +89,81 @@
             <h2 id="tareaModalTitle">Añadir Tarea Pendiente</h2>
             <form id="formTareaPendiente">
                 <div class="form-group">
-                    <label for="selectTarea">Nueva Tarea</label>
-                    <select id="selectTarea" name="descripcion" required>
-                        <option value="">-- Selecciona un trabajo --</option>
-                    </select>
+                    <label for="descripcion_tarea">Nueva Tarea</label>
+                    <input type="text" id="descripcion_tarea" name="descripcion" list="tareas-list" required autocomplete="off" placeholder="Escribe o selecciona una tarea">
+                    <datalist id="tareas-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="fechaLimiteTarea">Fecha Límite (Opcional)</label>
+                    <input type="date" id="fechaLimiteTarea" name="fecha_limite">
+                </div>
+                <div class="form-group">
+                    <label for="observacionesTarea">Observaciones (Opcional)</label>
+                    <textarea id="observacionesTarea" name="observaciones" rows="2"></textarea>
+                </div>
+                <button type="submit">➕ Añadir Tarea</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="bonsai_detalle.js" type="module"></script>
+</body>
+</html>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Añadir/Editar Trabajo Realizado -->
+    <div id="trabajoBonsaiModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="trabajoModalTitle">Añadir Trabajo Realizado</h2>
+            <form id="formTrabajoBonsai">
+                <input type="hidden" id="trabajoBonsaiId" name="trabajoBonsaiId">
+                <div class="form-group">
+                    <label for="trabajo_id_input">Tipo de Trabajo</label>
+                    <input type="text" id="trabajo_id_input" list="trabajos-list" required autocomplete="off" placeholder="Escribe o selecciona un trabajo">
+                    <datalist id="trabajos-list"></datalist>
+                    <input type="hidden" id="trabajo_id" name="trabajo_id">
+                </div>
+                <div class="form-group">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="foto_antes">Foto Antes:</label>
+                    <input type="file" id="foto_antes" name="foto_antes" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="foto_despues">Foto Después:</label>
+                    <input type="file" id="foto_despues" name="foto_despues" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="observaciones_trabajo">Observaciones</label>
+                    <textarea id="observaciones_trabajo" name="observaciones" rows="3"></textarea>
+                </div>
+                <button type="submit">Guardar Trabajo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para ver imagen en grande (Lightbox) -->
+    <div id="imageModal" class="image-lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightboxImage">
+        <div id="caption"></div>
+    </div>
+
+    <!-- Modal para Añadir Tarea Pendiente -->
+    <div id="tareaPendienteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="tareaModalTitle">Añadir Tarea Pendiente</h2>
+            <form id="formTareaPendiente">
+                <div class="form-group">
+                    <label for="descripcion_tarea">Nueva Tarea</label>
+                    <input type="text" id="descripcion_tarea" name="descripcion" list="tareas-list" required autocomplete="off" placeholder="Escribe o selecciona una tarea">
+                    <datalist id="tareas-list"></datalist>
                 </div>
                 <div class="form-group">
                     <label for="fechaLimiteTarea">Fecha Límite (Opcional)</label>

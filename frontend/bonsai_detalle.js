@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const infoBonsaiDiv = document.getElementById('infoBonsai');
-    const selectTrabajo = document.getElementById('selectTrabajo');
     const historialDiv = document.getElementById('historialTrabajos');
     const form = document.getElementById('formTrabajoBonsai');
     const modal = document.getElementById('trabajoBonsaiModal');
@@ -22,21 +21,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTitle = document.getElementById('trabajoModalTitle');
     const submitButton = form.querySelector('button[type="submit"]');
 
+    // Elementos del combobox de trabajos
+    const trabajoInput = document.getElementById('trabajo_id_input');
+    const trabajosDataList = document.getElementById('trabajos-list');
+    const trabajoIdHiddenInput = document.getElementById('trabajo_id');
+
     // Elementos de Tareas Pendientes
     const formTarea = document.getElementById('formTareaPendiente');
-    const selectTarea = document.getElementById('selectTarea');
     const tareaModal = document.getElementById('tareaPendienteModal');
     const btnAbrirModalTarea = document.getElementById('btnAbrirModalTarea');
     const spanCerrarTarea = tareaModal.querySelector(".close-button");
     const listaTareasDiv = document.getElementById('listaTareasPendientes');
+    const linkCuidados = document.getElementById('linkCuidados');
+    const linkCalendario = document.getElementById('linkCalendario'); // Asumimos que el enlace tiene este ID
+
+    const tareaInput = document.getElementById('descripcion_tarea');
+    const tareasDataList = document.getElementById('tareas-list');
 
     let modoEdicion = false; // Este estado ahora controla el modal
+    let tareaOrigenId = null; // Para saber si el modal se abrió desde una tarea
     let currentBonsai = null; // Para guardar la info del bonsái actual
 
     const apiUrlBonsais = 'http://localhost:3000/api/bonsais';
     const apiUrlTrabajos = 'http://localhost:3000/api/trabajos';
     const apiUrlTrabajosBonsai = 'http://localhost:3000/api/trabajos_bonsai';
     const apiUrlTareas = 'http://localhost:3000/api/tareas';
+
+    let todosLosTiposDeTrabajo = []; // Para almacenar la lista completa con IDs
 
     // --- Lógica de Modales ---
     function abrirModal(modal) {
@@ -46,13 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function cerrarModal(modal) {
         modal.style.display = "none";
         if (modal.id === 'trabajoBonsaiModal') cancelarEdicion();
+        tareaOrigenId = null; // Limpiamos el ID de la tarea de origen
         if (modal.id === 'tareaPendienteModal') formTarea.reset();
     }
 
-    // Ocultar botón de añadir trabajo si es moderador
-    if (userRole === 'moderator') { // También aplica al formulario de tareas
+    // Ocultar botones para el moderador
+    if (userRole === 'moderator') {
         btnAbrirModalTarea.style.display = 'none';
         btnAbrirModal.style.display = 'none';
+        linkCuidados.style.display = 'none';
+        if(linkCalendario) {
+            linkCalendario.style.display = 'none';
+        }
     }
 
     btnAbrirModal.onclick = () => {
@@ -90,6 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const bonsai = await res.json();
             currentBonsai = bonsai; // Guardamos el bonsái para usarlo después
 
+            // Configurar el enlace a la página de cuidados
+            linkCuidados.href = `/cuidados.html?id=${bonsaiId}`;
+
+            // Crear el HTML para la información de la maceta
+            const macetaInfoHtml = bonsai.maceta_id
+                ? `<p><strong>Maceta:</strong> ${bonsai.maceta_ancho}x${bonsai.maceta_largo}x${bonsai.maceta_profundo} cm. <a href="/macetas.html" style="color: #7dc36f;">Ver</a></p>`
+                : `<p><strong>Maceta:</strong> Sin asignar</p>`;
+
+            const abonoInfoHtml = bonsai.abono_nombre
+                ? `<p><strong>Abono:</strong> ${bonsai.abono_nombre}</p>`
+                : `<p><strong>Abono:</strong> Sin asignar</p>`;
+
+
             // Actualizar el título de la página con el nombre del bonsái
             document.title = `Detalle: ${bonsai.nombre}`;
 
@@ -102,10 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p><strong>Especie:</strong> ${bonsai.especie}</p>
                         <p><strong>Edad:</strong> ${bonsai.edad} años</p>
                         <p><strong>Procedencia:</strong> ${bonsai.procedencia || 'No especificado'}</p>
-                        <p id="ultimoTrabajoP"><strong>Último trabajo:</strong> ${bonsai.fecha_riego ? new Date(bonsai.fecha_riego).toLocaleDateString() : 'N/A'}</p>
+                        ${macetaInfoHtml}
+                        ${abonoInfoHtml}
+                        <p id="ultimoTrabajoP"><strong>Último trabajo:</strong> ${bonsai.fecha_ultimo_trabajo ? new Date(bonsai.fecha_ultimo_trabajo).toLocaleDateString() : 'N/A'}</p>
                     </div>
                 </div>
             `;
+
         } catch (error) {
             // Si hay un error (no encontrado, sin permisos, etc.), lo mostramos en la página.
             document.body.innerHTML = `<div class="container"><h1>Error</h1><p>${error.message}</p><a href="/" class="back-link">&larr; Volver</a></div>`;
@@ -113,24 +145,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Cargar los tipos de trabajo en el combobox
+    /**
+     * Carga los tipos de trabajo y los popula en los elementos select/datalist.
+     * @param {HTMLElement} [selectElement] - Un elemento <select> opcional para poblar.
+     */
     async function cargarTiposDeTrabajo() {
+    try {
         const res = await fetch(apiUrlTrabajos, { headers: authHeader });
-        const trabajos = await res.json();
-        trabajos.forEach(trabajo => {
-            // Opción para el modal de trabajos realizados (usa ID como valor)
-            const optionTrabajo = document.createElement('option');
-            optionTrabajo.value = trabajo.id;
-            optionTrabajo.textContent = trabajo.tipo_trabajo;
-            selectTrabajo.appendChild(optionTrabajo);
+        todosLosTiposDeTrabajo = await res.json();
 
-            // Opción para el formulario de tareas pendientes (usa el nombre como valor)
-            const optionTarea = document.createElement('option');
-            optionTarea.value = trabajo.tipo_trabajo;
-            optionTarea.textContent = trabajo.tipo_trabajo;
-            selectTarea.appendChild(optionTarea);
+        // Limpiar elementos antes de poblar, solo si existen
+        if (trabajosDataList) trabajosDataList.innerHTML = '';
+        if (tareasDataList) tareasDataList.innerHTML = '';
+
+        todosLosTiposDeTrabajo.forEach(trabajo => {
+            const option = document.createElement('option');
+            option.value = trabajo.tipo_trabajo; // El valor del datalist es lo que se muestra
+
+            if (trabajosDataList) trabajosDataList.appendChild(option.cloneNode(true));
+            // Comprobamos si tareasDataList existe antes de usarlo
+            if (tareasDataList) tareasDataList.appendChild(option.cloneNode(true));
         });
+    } catch (error) {
+        console.error("Error al cargar los tipos de trabajo:", error);
     }
+    }
+
+    trabajoInput.addEventListener('input', () => {
+        const selectedTrabajo = todosLosTiposDeTrabajo.find(t => t.tipo_trabajo === trabajoInput.value);
+        trabajoIdHiddenInput.value = selectedTrabajo ? selectedTrabajo.id : '';
+    });
 
     // Cargar el historial de trabajos del bonsái
     async function cargarHistorial() {
@@ -139,7 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
         historialDiv.innerHTML = ''; // Limpiar la lista antes de volver a dibujarla
 
         if (historial.length === 0) {
-            historialDiv.innerHTML = '<p>No hay trabajos registrados para este bonsái.</p>';
+            historialDiv.innerHTML = `
+                <div class="empty-state-container" style="padding: 20px; margin-top: 0;">
+                    <div class="empty-state-icon">📖</div>
+                    <h2>Historial Vacío</h2>
+                    <p>Aún no se han registrado trabajos para este bonsái.</p>
+                    ${userRole !== 'moderator' ? '<p>¡Añade uno para empezar a ver su evolución!</p>' : ''}
+                </div>
+            `;
             return;
         }
 
@@ -210,7 +261,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTareas(tareas) {
         listaTareasDiv.innerHTML = '';
         if (tareas.length === 0) {
-            listaTareasDiv.innerHTML = '<p>No hay tareas pendientes.</p>';
+            listaTareasDiv.innerHTML = `
+                <div class="empty-state-container" style="padding: 20px; margin-top: 0;">
+                    <div class="empty-state-icon">✅</div>
+                    <h2>¡Todo al día!</h2>
+                    <p>No hay tareas pendientes para este bonsái.</p>
+                </div>
+            `;
             return;
         }
 
@@ -222,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let actionButtons = '';
             if (userRole !== 'moderator') { // Los moderadores no pueden realizar acciones
                  actionButtons = `
-                    <button class="btn-editar" data-id="${tarea.id}" data-action="mover">Completar y Mover</button>
+                    <button class="btn-editar btn-mover-historial" data-id="${tarea.id}" data-descripcion="${tarea.descripcion}" data-observaciones="${tarea.observaciones || ''}">Completar y Mover</button>
                     <button class="btn-eliminar" data-id="${tarea.id}" data-type="tarea">Eliminar</button>
                  `;
             }
@@ -281,23 +338,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = e.target;
         const tareaId = target.dataset.id;
 
-        // Mover tarea al historial
-        if (target.dataset.action === 'mover') {
-             const confirmado = await showConfirm('¿Mover esta tarea al historial de trabajos realizados?', 'Sí, mover');
-             if (confirmado && tareaId) {
-                 try {
-                     const res = await fetch(`${apiUrlTareas}/${tareaId}/mover-a-historial`, { method: 'POST', headers: authHeader });
-                     if (!res.ok) throw new Error('No se pudo mover la tarea.');
-                     showToast('Tarea completada y movida al historial.');
-                     await cargarTareasPendientes(); // Recargar lista de tareas
-                     await cargarHistorial(); // Recargar historial de trabajos
-                     await cargarInfoBonsai(); // Recargar info principal para actualizar fecha
-                 } catch (error) {
-                     showToast(error.message, true);
-                 }
-             }
-         }
+        // Abrir modal para mover tarea al historial
+        if (target.classList.contains('btn-mover-historial')) {
+            const descripcionTarea = target.dataset.descripcion;
+            const observacionesTarea = target.dataset.observaciones;
 
+            // Buscar el ID del trabajo que coincide con la descripción de la tarea
+            const trabajoCoincidente = todosLosTiposDeTrabajo.find(t => t.tipo_trabajo.toLowerCase() === descripcionTarea.toLowerCase());
+
+            if (!trabajoCoincidente) {
+                showToast(`El tipo de trabajo "${descripcionTarea}" no existe. Por favor, créalo primero.`, true);
+                return;
+            }
+
+            // Rellenar el formulario del modal
+            form.reset();
+            trabajoInput.value = trabajoCoincidente.tipo_trabajo;
+            trabajoIdHiddenInput.value = trabajoCoincidente.id;
+            form.fecha.value = new Date().toISOString().split('T')[0];
+            form.observaciones_trabajo.value = observacionesTarea;
+
+            // Configurar el modal para el modo "crear desde tarea"
+            modoEdicion = false;
+            tareaOrigenId = tareaId; // Guardamos el ID de la tarea
+            modalTitle.textContent = "Completar Tarea y Mover a Historial";
+            submitButton.textContent = "💾 Mover a Historial";
+            
+            abrirModal(modal);
+        }
+ 
         // Eliminar tarea
         if (target.classList.contains('btn-eliminar') && target.dataset.type === 'tarea') {
             const confirmado = await showConfirm('¿Seguro que quieres eliminar esta tarea?');
@@ -336,6 +405,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData
                 });
                 successMessage = 'Trabajo actualizado con éxito';
+            } else if (tareaOrigenId) {
+                // --- MODO CREACIÓN DESDE TAREA ---
+                res = await fetch(`${apiUrlTrabajosBonsai}/from-task/${tareaOrigenId}`, {
+                    method: 'POST',
+                    headers: headersSinContentType,
+                    body: formData
+                });
+                successMessage = 'Tarea completada y movida al historial';
+
             } else {
                 // --- MODO CREACIÓN ---
                 formData.append('bonsai_id', bonsaiId);
@@ -351,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             cerrarModal(modal);
             await cargarHistorial();
+            await cargarTareasPendientes(); // Recargamos también las tareas por si venimos de una
             await cargarInfoBonsai(); // Recargamos la info para asegurar que la fecha se actualiza
             showToast(successMessage);
         } catch (error) {
@@ -391,7 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const observaciones = itemDiv.dataset.observaciones;
 
             form.trabajoBonsaiId.value = id;
-            selectTrabajo.value = trabajoId;
+            trabajoIdHiddenInput.value = trabajoId;
+            trabajoInput.value = todosLosTiposDeTrabajo.find(t => t.id == trabajoId)?.tipo_trabajo || '';
             form.fecha.value = new Date(fecha).toISOString().split('T')[0];
             form.observaciones_trabajo.value = observaciones;
 
@@ -421,6 +501,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Delegación de eventos para la imagen principal del bonsái
+    infoBonsaiDiv.addEventListener('click', (e) => {
+        if (e.target.classList.contains('detalle-bonsai-img')) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('lightboxImage');
+            const closeModal = document.querySelector('.close-lightbox');
+
+            modal.style.display = "block";
+            modalImg.src = e.target.src;
+
+            const close = () => {
+                modal.style.display = "none";
+            }
+
+            closeModal.onclick = close;
+            modal.onclick = (event) => { if (event.target === modal) close(); };
+        }
+    });
+
     function cancelarEdicion() {
         form.reset();
         form.trabajoBonsaiId.value = '';
@@ -429,9 +528,21 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitle.textContent = "Añadir Trabajo Realizado";
     }
 
-    // Cargar todo al iniciar
-    cargarInfoBonsai();
-    cargarTiposDeTrabajo();
-    cargarHistorial();
-    cargarTareasPendientes();
+    // --- Carga Inicial de la Página ---
+    async function inicializarPagina() {
+        // Primero, cargamos la información esencial del bonsái y esperamos a que termine.
+        await cargarInfoBonsai();
+
+        // Si currentBonsai no se cargó (por un error o porque no existe), no continuamos.
+        if (!currentBonsai) return;
+
+        // Ahora que tenemos la info del bonsái, podemos cargar el resto en paralelo.
+        await Promise.all([
+            cargarTiposDeTrabajo(),
+            cargarHistorial(),
+            cargarTareasPendientes()
+        ]);
+    }
+
+    inicializarPagina();
 });

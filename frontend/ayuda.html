@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guía de Usuario - Bonsai App 🌱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+            <div id="header-actions">
+                <span id="userInfo"></span>
+            </div>
+        </div>
+        <div class="header">
+            <h1 style="margin: 0;">Guía de Usuario</h1>
+        </div>
+
+        <div class="info-card">
+            <h2>Roles de Usuario</h2>
+            <p>La aplicación cuenta con tres roles diferentes, cada uno con sus propios permisos y responsabilidades.</p>
+
+            <div class="trabajo-item">
+                <h4>👤 Usuario (User)</h4>
+                <p>Este es el rol estándar para todos los nuevos usuarios registrados y aprobados.</p>
+                <ul>
+                    <li>Puede crear, ver, editar y eliminar sus <strong>propios bonsáis</strong>.</li>
+                    <li>Puede gestionar el historial de trabajos y las tareas pendientes de sus bonsáis.</li>
+                    <li>Puede gestionar su colección de macetas y su plan de cuidados por especie.</li>
+                    <li>Puede añadir y editar <strong>"Procedencias"</strong> y <strong>"Técnicas de Bonsái"</strong>, que son compartidas por todos.</li>
+                    <li><strong>No puede ver</strong> el contenido de otros usuarios.</li>
+                </ul>
+            </div>
+
+            <div class="trabajo-item">
+                <h4>👮 Moderador (Moderator)</h4>
+                <p>Este rol está diseñado para supervisar el contenido de la plataforma sin capacidad de edición.</p>
+                <ul>
+                    <li>Puede <strong>ver todos los bonsáis</strong> de todos los usuarios.</li>
+                    <li>Puede <strong>eliminar</strong> bonsáis o trabajos del historial de otros usuarios (excepto los de un administrador).</li>
+                    <li><strong>No puede</strong> crear ni editar bonsáis, trabajos, tareas, etc. Su función es puramente de moderación.</li>
+                </ul>
+            </div>
+
+            <div class="trabajo-item">
+                <h4>👑 Administrador (Admin)</h4>
+                <p>Este es el rol con más privilegios, destinado a la gestión completa de la aplicación.</p>
+                <ul>
+                    <li>Tiene todos los permisos de un <strong>Usuario</strong> para gestionar sus propios bonsáis.</li>
+                    <li>Tiene acceso al <strong>Panel de Administración</strong> para gestionar usuarios (aprobar cuentas, cambiar roles, eliminar usuarios).</li>
+                    <li>Tiene control total (añadir, editar y <strong>eliminar</strong>) sobre las <strong>"Procedencias"</strong> y <strong>"Técnicas de Bonsái"</strong>.</li>
+                    <li>En el futuro, podrá ver todo el contenido, pero actualmente su vista de bonsáis y calendario es como la de un usuario normal para facilitar la gestión de su propia colección.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card" style="margin-top: 30px;">
+            <h2>Funcionalidades Principales</h2>
+
+            <div class="trabajo-item">
+                <h4>🌳 Mis Bonsáis</h4>
+                <p>La pantalla principal donde puedes ver tu colección. Desde aquí puedes añadir nuevos bonsáis, editarlos o eliminarlos.</p>
+            </div>
+            <div class="trabajo-item">
+                <h4>📄 Detalle del Bonsái</h4>
+                <p>Al hacer clic en un bonsái, accedes a su ficha completa. Aquí puedes ver y gestionar su <strong>Historial de Trabajos</strong> y sus <strong>Tareas Pendientes</strong>.</p>
+            </div>
+            <div class="trabajo-item">
+                <h4>🗓️ Calendario</h4>
+                <p>Una vista unificada que te muestra los trabajos ya realizados (en verde) y las tareas que tienes pendientes con fecha límite (en rojo).</p>
+            </div>
+            <div class="trabajo-item">
+                <h4>🛠️ Técnicas de Bonsái</h4>
+                <p>Define los tipos de trabajo que se pueden realizar (ej: "Poda", "Trasplante"). Tanto usuarios como administradores pueden gestionar esta lista, que es común para toda la aplicación.</p>
+            </div>
+            <div class="trabajo-item">
+                <h4>🖼️ Galería</h4>
+                <p>Una sección visual que muestra el "antes y después" de los trabajos realizados que tengan ambas fotos. Permite ver la evolución de los bonsáis de una forma muy gráfica.</p>
+            </div>
+            <div class="trabajo-item">
+                <h4>🏺 Macetas</h4>
+                <p>Te permite llevar un inventario de tus macetas, con sus fotos y dimensiones, y asignarlas a los bonsáis que las ocupan.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="ayuda.js" type="module"></script>
+</body>
+</html>

@@ -6,24 +6,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Gestionar Procedencias</h1>
-        <div id="header-actions">
-            <span id="userInfo" class="user-info"></span>
-            <a href="/" class="nav-link">Mis Bonsáis</a>
-        </div>
-    </div>
-
     <div class="container">
-        <div class="info-card">
-            <h2>Añadir Nueva Procedencia</h2>
-            <form id="formProcedencia">
-                <div class="form-group">
-                    <label for="nombreProcedencia">Nombre de la Procedencia</label>
-                    <input type="text" id="nombreProcedencia" name="nombre" required autocomplete="off">
-                </div>
-                <button type="submit">➕ Añadir</button>
-            </form>
+        <!-- La cabecera se inyectará con JS -->
+        <!-- El formulario de añadir ahora estará en un modal -->
+        
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <input type="search" id="searchInput" placeholder="Buscar por nombre de procedencia...">
         </div>
 
         <div id="listaProcedencias"></div>
@@ -40,6 +29,21 @@
                         <input type="text" id="editNombreProcedencia" name="nombre" required autocomplete="off">
                     </div>
                     <button type="submit">💾 Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para Añadir Procedencia -->
+        <div id="addProcedenciaModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Añadir Nueva Procedencia</h2>
+                <form id="formAddProcedencia">
+                    <div class="form-group">
+                        <label for="nombreProcedencia">Nombre de la Procedencia</label>
+                        <input type="text" id="nombreProcedencia" name="nombre" required autocomplete="off">
+                    </div>
+                    <button type="submit">➕ Añadir Procedencia</button>
                 </form>
             </div>
         </div>

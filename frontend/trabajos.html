@@ -14,27 +14,23 @@
             </div>
         </div>
         <div class="header">
-            <h1 style="margin: 0;">Registro de Trabajos</h1>
-            <button id="btnAbrirModal" class="nav-link" style="border: none; cursor: pointer;">Añadir Nuevo Trabajo</button>
+            <h1 style="margin: 0;">Técnicas de Bonsái</h1>
         </div>
 
-        <!-- El Modal para Trabajos -->
-        <div id="trabajoModal" class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <h2 id="modalTitle">Añadir Trabajo</h2>
-                <form id="formTrabajo" novalidate>
-                    <div class="form-group">
-                        <label for="tipo_trabajo">Tipo de Trabajo</label>
-                        <input type="text" id="tipo_trabajo" name="tipo_trabajo" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha">Fecha</label>
-                        <input type="date" id="fecha" name="fecha" required />
-                    </div>
-                    <button type="submit">Guardar</button>
-                </form>
-            </div>
+        <div class="info-card">
+            <h2>Añadir Nueva Técnica</h2>
+            <form id="formTrabajo" novalidate>
+                <div class="form-group">
+                    <label for="tipo_trabajo">Nombre de la Técnica</label>
+                    <input type="text" id="tipo_trabajo" name="tipo_trabajo" required autocomplete="off" />
+                </div>
+                <button type="submit">➕ Añadir</button>
+            </form>
+        </div>
+
+        <!-- Barra de búsqueda -->
+        <div class="search-container">
+            <input type="search" id="searchInput" placeholder="Buscar por tipo de trabajo...">
         </div>
 
         <div id="listaTrabajos"></div>

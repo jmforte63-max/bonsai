@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan de Cuidados - Bonsai App 🌱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a id="backLink" href="/" class="back-link">&larr; Volver al detalle</a>
+            <div id="header-actions">
+                <span id="userInfo" class="user-info"></span>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h1 id="bonsaiName">Plan de Cuidados</h1>
+            <form id="formCuidadosBonsai">
+                <div class="form-group">
+                    <label for="descripcion_cuidados">Anotaciones sobre riego, abono, sustrato, ubicación, etc.</label>
+                    <textarea id="descripcion_cuidados" name="descripcion" rows="20" placeholder="Escribe aquí los cuidados específicos para este bonsái..."></textarea>
+                </div>
+                <div style="text-align: right; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" id="deleteButton" class="btn-eliminar">❌ Eliminar Todo</button>
+                    <button type="submit" id="saveButton">💾 Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="cuidados.js" type="module"></script>
+</body>
+</html>

@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Configura la autenticación y protege la página
     const { authHeader, userRole } = setupAuthUI('userInfo', '#header-actions');
 
-    // Esta página es solo para administradores
-    if (userRole !== 'admin') {
+    // Esta página es para administradores y usuarios, pero no para moderadores.
+    if (userRole === 'moderator') {
         document.body.innerHTML = `
             <div class="container">
                 <h1>Acceso Denegado</h1>
@@ -16,10 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // Crear la cabecera estándar para páginas de gestión
+    const header = document.createElement('div');
+    header.className = 'header';
+    header.innerHTML = `
+        <a href="/" class="back-link">&larr; Volver a Mis Bonsáis</a>
+        <div id="header-actions"></div> <!-- authUI inyecta aquí el user info y logout -->
+    `;
+    const titleHeader = document.createElement('div');
+    titleHeader.className = 'header';
+    titleHeader.innerHTML = `
+        <h1 style="margin: 0;">Gestionar Procedencias</h1>
+        <button id="btnAbrirAddModal" class="nav-link">Añadir Nueva Procedencia</button>
+    `;
+
+    const container = document.querySelector('.container');
+    container.prepend(titleHeader);
+    container.prepend(header);
+
     const apiUrlProcedencias = "http://localhost:3000/api/procedencias";
-    const form = document.getElementById('formProcedencia');
     const lista = document.getElementById('listaProcedencias');
-    const nombreInput = document.getElementById('nombreProcedencia');
+    const searchInput = document.getElementById('searchInput');
 
     // Elementos del modal de edición
     const editModal = document.getElementById('editProcedenciaModal');
@@ -27,6 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const editInput = document.getElementById('editNombreProcedencia');
     const editIdInput = document.getElementById('editProcedenciaId');
     const closeModalButton = editModal.querySelector('.close-button');
+
+    // Elementos del modal de añadir
+    const addModal = document.getElementById('addProcedenciaModal');
+    const formAddProcedencia = document.getElementById('formAddProcedencia');
+    const btnAbrirAddModal = document.getElementById('btnAbrirAddModal');
+    const closeAddModalButton = addModal.querySelector('.close-button');
+    const nombreInput = document.getElementById('nombreProcedencia');
+
+    let todasLasProcedencias = []; // Almacenamos la lista completa aquí
 
     /**
      * Carga y renderiza la lista de procedencias desde la API.
@@ -36,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(apiUrlProcedencias, { headers: authHeader });
             if (!res.ok) throw new Error('Error al cargar las procedencias.');
             
-            const procedencias = await res.json();
-            renderProcedencias(procedencias);
+            todasLasProcedencias = await res.json();
+            renderProcedencias(todasLasProcedencias);
         } catch (error) {
             showToast(error.message, true);
         }
@@ -57,13 +83,26 @@ document.addEventListener('DOMContentLoaded', () => {
         procedencias.forEach(p => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'trabajo-item'; // Reutilizamos el estilo
-            itemDiv.innerHTML = `
-                <div class="user-info-line">
-                    <p class="item-nombre">${p.nombre}</p>
+
+            // Lógica de botones de acción según el rol
+            let actionButtons = '';
+            if (userRole === 'admin') {
+                actionButtons = `
                     <div class="item-actions">
                         <button class="btn-editar" data-id="${p.id}" data-nombre="${p.nombre}">✏️ Editar</button>
                         <button class="btn-eliminar" data-id="${p.id}">Eliminar</button>
-                    </div>
+                    </div>`;
+            } else if (userRole === 'user') {
+                actionButtons = `
+                    <div class="item-actions">
+                        <button class="btn-editar" data-id="${p.id}" data-nombre="${p.nombre}">✏️ Editar</button>
+                    </div>`;
+            }
+
+            itemDiv.innerHTML = `
+                <div class="user-info-line">
+                    <p class="item-nombre">${p.nombre}</p>
+                    ${actionButtons}
                 </div>
             `;
             lista.appendChild(itemDiv);
@@ -71,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Manejar el envío del formulario para añadir una nueva procedencia
-    form.addEventListener('submit', async (e) => {
+    formAddProcedencia.addEventListener('submit', async (e) => {
         e.preventDefault();
         const nombre = nombreInput.value.trim();
         if (!nombre) return;
@@ -86,10 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error(data.message || 'No se pudo añadir la procedencia.');
             
             showToast('Procedencia añadida con éxito.');
-            form.reset();
+            addModal.style.display = 'none';
+            formAddProcedencia.reset();
             cargarProcedencias(); // Recargar la lista
         } catch (error) {
             showToast(error.message, true);
+            // Si el error es por duplicado, limpiamos el campo
+            if (error.message.includes('ya existe')) {
+                nombreInput.value = '';
+            }
         }
     });
 
@@ -135,9 +179,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeModalButton.onclick = cerrarModalEditar;
 
+    // Lógica para el modal de añadir
+    btnAbrirAddModal.onclick = () => addModal.style.display = 'block';
+    closeAddModalButton.onclick = () => addModal.style.display = 'none';
+
     window.addEventListener('click', (event) => {
         if (event.target === editModal) {
             cerrarModalEditar();
+        }
+        if (event.target === addModal) {
+            addModal.style.display = 'none';
         }
     });
 
@@ -162,7 +213,20 @@ document.addEventListener('DOMContentLoaded', () => {
             cargarProcedencias(); // Recargar la lista
         } catch (error) {
             showToast(error.message, true);
+            // Si el error es por duplicado, limpiamos el campo del modal
+            if (error.message.includes('ya está en uso')) {
+                editInput.value = '';
+            }
         }
+    });
+
+    // --- Lógica de Búsqueda ---
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const procedenciasFiltradas = todasLasProcedencias.filter(p =>
+            p.nombre.toLowerCase().includes(searchTerm)
+        );
+        renderProcedencias(procedenciasFiltradas);
     });
 
     // Carga inicial
